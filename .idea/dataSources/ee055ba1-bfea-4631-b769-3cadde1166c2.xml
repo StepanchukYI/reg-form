@@ -1,0 +1,81 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<dataSource name="test@localhost">
+  <database-model serializer="dbm" rdbms="MYSQL" format-version="4.4">
+    <root id="1"/>
+    <schema id="2" parent="1" name="test">
+      <Current>1</Current>
+      <Visible>1</Visible>
+    </schema>
+    <schema id="3" parent="1" name="beejee"/>
+    <schema id="4" parent="1" name="db"/>
+    <schema id="5" parent="1" name="ekaterinoslav"/>
+    <schema id="6" parent="1" name="information_schema"/>
+    <schema id="7" parent="1" name="mysql"/>
+    <schema id="8" parent="1" name="oc_shop1"/>
+    <schema id="9" parent="1" name="performance_schema"/>
+    <schema id="10" parent="1" name="phpmyadmin"/>
+    <schema id="11" parent="1" name="rubygarage"/>
+    <schema id="12" parent="1" name="testwp"/>
+    <schema id="13" parent="1" name="trustme_db"/>
+    <schema id="14" parent="1" name="webgtp"/>
+    <schema id="15" parent="1" name="wp_dnfashion"/>
+    <schema id="16" parent="1" name="wp_miros"/>
+    <schema id="17" parent="1" name="wp_pavelko"/>
+    <schema id="18" parent="1" name="wp_salon_db"/>
+    <schema id="19" parent="1" name="wp_tyreseal"/>
+    <schema id="20" parent="1" name="wp_woo"/>
+    <table id="21" parent="2" name="cars"/>
+    <table id="22" parent="2" name="city"/>
+    <table id="23" parent="2" name="color"/>
+    <column id="24" parent="21" name="id">
+      <Position>1</Position>
+      <DataType>int(11)|0</DataType>
+      <NotNull>1</NotNull>
+    </column>
+    <column id="25" parent="21" name="car_brand">
+      <Position>2</Position>
+      <DataType>int(11)|0</DataType>
+      <NotNull>1</NotNull>
+    </column>
+    <column id="26" parent="21" name="car_model">
+      <Position>3</Position>
+      <DataType>int(11)|0</DataType>
+      <NotNull>1</NotNull>
+    </column>
+    <key id="27" parent="21" name="PRIMARY">
+      <NameSurrogate>1</NameSurrogate>
+      <ColNames>id</ColNames>
+      <Primary>1</Primary>
+    </key>
+    <column id="28" parent="22" name="id">
+      <Position>1</Position>
+      <DataType>int(11)|0</DataType>
+      <NotNull>1</NotNull>
+    </column>
+    <column id="29" parent="22" name="name">
+      <Position>2</Position>
+      <DataType>int(11)|0</DataType>
+      <NotNull>1</NotNull>
+    </column>
+    <key id="30" parent="22" name="PRIMARY">
+      <NameSurrogate>1</NameSurrogate>
+      <ColNames>id</ColNames>
+      <Primary>1</Primary>
+    </key>
+    <column id="31" parent="23" name="id">
+      <Position>1</Position>
+      <DataType>int(11)|0</DataType>
+      <NotNull>1</NotNull>
+    </column>
+    <column id="32" parent="23" name="car_color">
+      <Position>2</Position>
+      <DataType>int(11)|0</DataType>
+      <NotNull>1</NotNull>
+    </column>
+    <key id="33" parent="23" name="PRIMARY">
+      <NameSurrogate>1</NameSurrogate>
+      <ColNames>id</ColNames>
+      <Primary>1</Primary>
+    </key>
+  </database-model>
+</dataSource>
