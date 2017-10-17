@@ -151,7 +151,7 @@ function custom_registration_submit_ajax()
 	}
 	if ( $step == '2' )
 	{
-		$reg_error_2 = registration_validationPart2( $payType, $bankCard, $carMark, $carModel, $carColor, $carYear, $carNumber );
+		$reg_error_2 = registration_validationPart2($name, $lname, $fname, $email, $phonenumber, $city, $payType, $bankCard, $carMark, $carModel, $carColor, $carYear, $carNumber );
 
 		if ( count( $reg_error_2 ) == 0 )
 		{
@@ -326,6 +326,12 @@ function castom_reg_form_my_custom_js_footer()
             jQuery('#buttonSubmitPart2').click(function () {
                 var form_data = new FormData();
                 form_data.append("action", 'custom_registration_submit_ajax');
+                form_data.append("name", jQuery('#name').val());
+                form_data.append("lname", jQuery('#lname').val());
+                form_data.append("fname", jQuery('#fname').val());
+                form_data.append("email", jQuery('#email').val());
+                form_data.append("phonenumber", jQuery('#phonenumber').val());
+                form_data.append("city", jQuery('#city').val());
                 form_data.append("payType", jQuery('#payType').val());
                 form_data.append("bankCard", jQuery('#bankCard').val());
                 form_data.append("carMark", jQuery('#carMark').val());
@@ -872,7 +878,7 @@ function registration_validationPart1(
 }
 
 function registration_validationPart2(
-	$payType, $bankCard, $carMark, $carModel, $carColor, $carYear, $carNumber
+	$name, $lname, $fname, $email, $phonenumber, $city, $payType, $bankCard, $carMark, $carModel, $carColor, $carYear, $carNumber
 ) {
 	$reg_errors = [];
 
@@ -906,6 +912,37 @@ function registration_validationPart2(
 	if ( ! preg_match( "/^(?=.*[A-Za-z])(?=.*\d)[A-Za-z\d]{8}$/", $carNumber ) || strlen( $carNumber ) != 8 )
 	{
 		$reg_errors['carNumber'] = 'Ошибка ввода Госномера автомобиля(номер автомобиля может содержать только латинские буквы и цифры)';
+	}
+	if ( strlen( $name ) < 2 || strlen( $name ) > 100 )
+	{
+		$reg_errors['name'] = 'Ошибка ввода имени';
+	}
+	if ( strlen( $lname ) < 2 || strlen( $lname ) > 100 )
+	{
+		$reg_errors['lname'] = 'Ошибка ввода фамилии';
+	}
+	if ( strlen( $fname ) < 2 || strlen( $fname ) > 100 )
+	{
+		$reg_errors['fname'] = 'Ошибка ввода отчества';
+	}
+	if ( strlen( $city ) < 2 || strlen( $city ) > 100 )
+	{
+		$reg_errors['city'] = 'Ошибка ввода города';
+	}
+	if ( is_email( $email ) )
+	{
+		$arg = server_post_request( 'check-email', json_encode( [ 'email' => $email ] ) );
+		if ( $arg->result == 'busy' )
+		{
+			$reg_errors['email'] = 'Выбранный email уже существует';
+		}
+	} else
+	{
+		$reg_errors['email'] = 'Ошибка ввода Email';
+	}
+	if ( ! preg_match( "/[0-9]$/i", $phonenumber ) || strlen( $phonenumber ) != 9 )
+	{
+		$reg_errors['phonenumber'] = 'Ошибка ввода номера';
 	}
 
 	return $reg_errors;
@@ -968,11 +1005,17 @@ function complete_registrationPart1(
 }
 
 function complete_registrationPart2(
-	$payType, $bankCard, $carMark, $carModel, $carColor, $carYear, $carNumber
+	$name, $lname, $fname, $email, $phonenumber, $city,$payType, $bankCard, $carMark, $carModel, $carColor, $carYear, $carNumber
 ) {
 
 	$response = server_post_request( 'add-driver', json_encode( [
 		'client' => [
+			"last_name"       => $lname,
+			"first_name"      => $name,
+			"patronymic_name" => $fname,
+			"email"           => $email,
+			"telefon_number"  => "+380" . $phonenumber,
+			"city"            => $city,
 			"periodicity"     => $payType,
 			"bankcard_number" => $bankCard
 		],
