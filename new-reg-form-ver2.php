@@ -27,7 +27,7 @@ function abra_kadabra_db_city()
 {
 	global $wpdb;
 
-	return $wpdb->get_results( "SELECT name FROM city ORDER BY name", 'ARRAY_A' );
+	return $wpdb->get_results( "SELECT name FROM city ORDER BY id", 'ARRAY_A' );
 }
 
 
@@ -140,31 +140,37 @@ function custom_registration_submit_ajax()
 				$name, $lname, $fname, $email, $phonenumber, $city
 			);
 
-			if($response['user']->resoult == 'ok'){
+			if ( $response['step1']->result == 'ok' )
+			{
 				$response = [ 'success' => '2' ];
-            }else {
-				$response = [ 'error' => array('user' =>$response['user']->description) ];
+			} else
+			{
+				$response = [ 'error' => array( 'user123' => $response['user']->description ) ];
 			}
-		} else {
+		} else
+		{
 			$response = [ 'error' => $reg_error_1 ];
 		}
 	}
 	if ( $step == '2' )
 	{
-		$reg_error_2 = registration_validationPart2($name, $lname, $fname, $email, $phonenumber, $city, $payType, $bankCard, $carMark, $carModel, $carColor, $carYear, $carNumber );
+		$reg_error_2 = registration_validationPart2( $name, $lname, $fname, $email, $phonenumber, $city, $payType, $bankCard, $carMark, $carModel, $carColor, $carYear, $carNumber );
 
 		if ( count( $reg_error_2 ) == 0 )
 		{
 			$response = complete_registrationPart2(
-				$payType, $bankCard, $carMark, $carModel, $carColor, $carYear, $carNumber
+				$name, $lname, $fname, $email, $phonenumber, $city, $payType, $bankCard, $carMark, $carModel, $carColor, $carYear, $carNumber
 			);
 
-			if($response['user']->resoult == 'ok'){
+			if ( $response['step2']->result == 'ok' )
+			{
 				$response = [ 'success' => '3' ];
-			} else {
-				$response = [ 'error' => array('user' =>$response['user']->description) ];
-            }
-		} else {
+			} else
+			{
+				$response = [ 'error' => array( 'step2' => $response['user']->description ) ];
+			}
+		} else
+		{
 			$response = [ 'error' => $reg_error_2 ];
 		}
 	}
@@ -174,7 +180,7 @@ function custom_registration_submit_ajax()
 
 		if ( count( $reg_error_3 ) == 0 )
 		{
-			$response = complete_registrationPart3(	$email, $file);
+			$response = complete_registrationPart3( $email, $file );
 
 			if ( $response['doc_1']->result == 'ok' )
 			{
@@ -207,7 +213,8 @@ function custom_registration_submit_ajax()
 			{
 				$response = [ 'error' => array( 'doc_1' => $response['doc_1']->description ) ];
 			}
-		}else {
+		} else
+		{
 			$response = [ 'error' => $reg_error_3 ];
 		}
 	}
@@ -288,7 +295,7 @@ function castom_reg_form_my_custom_js_footer()
                     success: function (response) {
                         console.log('success');
                         if (response.error) {
-                            console.log('2 error');
+                            console.log('1 error');
                             jQuery('#modal-text').html('');
                             jQuery('#myModal').css('display', 'block');
                             if (response.error.name) {
@@ -309,7 +316,7 @@ function castom_reg_form_my_custom_js_footer()
                             if (response.error.city) {
                                 jQuery('#modal-text').append('<p>' + response.error.city + '<p>');
                             }
-                            if (response.error.user) {
+                            if (response.error.step1) {
                                 jQuery('#modal-text').append('<p>' + response.error.user + '<p>');
                             }
                         }
@@ -374,7 +381,7 @@ function castom_reg_form_my_custom_js_footer()
                             if (response.error.carNumber) {
                                 jQuery('#modal-text').append('<p>' + response.error.carNumber + '<p>');
                             }
-                            if (response.error.user) {
+                            if (response.error.step2) {
                                 jQuery('#modal-text').append('<p>' + response.error.user + '<p>');
                             }
                         }
@@ -398,9 +405,11 @@ function castom_reg_form_my_custom_js_footer()
                 form_data.append("fileKategory", fileKategory);
                 form_data.append("fileTechMark", fileTechMark);
                 form_data.append("fileTechNumber", fileTechNumber);
-                form_data.append("polis", filePolis);
+                form_data.append("filePolis", filePolis);
+                form_data.append("email", jQuery('#email').val());
                 form_data.append("action", 'custom_registration_submit_ajax');
                 form_data.append("personalData", jQuery('#personalData').is(':checked'));
+                form_data.append("step", 3);
                 jQuery.ajax({
                     type: "post",
                     url: new_reg_ajax_url,
@@ -449,15 +458,33 @@ function castom_reg_form_my_custom_js_footer()
                             }
                         }
                         if (response.success) {
+                            jQuery('#name').val('');
+                            jQuery('#lname').val('');
+                            jQuery('#fname').val('');
+                            jQuery('#email').val('');
+                            jQuery('#phonenumber').val('');
+                            jQuery('#city').val('');
+                            jQuery('#payType').val('');
+                            jQuery('#bankCard').val('');
+                            jQuery('#carMark').val('');
+                            jQuery('#carModel').val('');
+                            jQuery('#carColor').val('');
+                            jQuery('#carYear').val('');
+                            jQuery('#carNumber').val('');
                             console.log('3 success');
                             jQuery('#modal-text').text(response.success);
                             jQuery('#myModal').css('display', 'block');
-                            window.location.href = "http://uberlin.com.ua/welcometouber";
+                            goto();
 
                         }
                     }
-                });
+                })
+                ;
             });
+
+            function goto() {
+                window.location = "http://uberlin.com.ua/welcometouber";
+            }
         });
 
         jQuery(document).on("change", "#carMark", function () {
@@ -594,6 +621,9 @@ function registration_form( $local )
         <div id="tabs" class="acf-tab-wrap -top">
 
             <div id="tabs-1" style="display: block">
+                <div>
+                    <h3>Укажите Ваши данные</h3>
+                </div>
                 <div class="acf-field acf-field-text">
                     <div class="acf-input">
                         <div class="acf-input-wrap">
@@ -651,13 +681,20 @@ function registration_form( $local )
                            id="buttonSubmitPart1"
                            value="Далее"/>
                 </div>
+                <div>
+                    <p>Остались вопросы?<br> Подбронее по ссылке <br><a href="http://uberlin.com.ua/welcometouber/">uberlin.com.ua/welcometouber</a>
+                        <br>или по телефону 7373</p>
+                </div>
             </div>
 
             <div id="tabs-2" style="display: none">
+                <div>
+                    <h3>Заполните информацию об автомобиле</h3>
+                </div>
                 <div class="acf-field acf-field-select">
                     <div class="acf-input">
                         <select class="" name="payType" id="payType">
-                            <option value="">Периодичность выплат</option>
+                            <option value="Еженедельно">Периодичность выплат</option>
                             <option value="Ежедневно">Ежедневно</option>
                             <option value="Еженедельно">Еженедельно</option>
                         </select>
@@ -747,6 +784,10 @@ function registration_form( $local )
                            id="buttonSubmitPart2"
                            value="Далее"/>
                 </div>
+                <div>
+                    <p>Остались вопросы?<br> Подбронее по ссылке <br><a href="http://uberlin.com.ua/welcometouber/">uberlin.com.ua/welcometouber</a>
+                        <br>или по телефону 7373</p>
+                </div>
             </div>
 
             <div id="tabs-3" style="display: none">
@@ -783,13 +824,13 @@ function registration_form( $local )
                            id="buttonSubmitPart3"
                            value="Регистрация"/>
                 </div>
+                <div>
+                    <p>Остались вопросы?<br> Подбронее по ссылке <br><a href="http://uberlin.com.ua/welcometouber/">uberlin.com.ua/welcometouber</a>
+                        <br>или по телефону 7373</p>
+                </div>
             </div>
 
-        </div>
-        <div>
-            <p>Остались вопросы?<br> Подбронее по ссылке <br><a href="http://uberlin.com.ua/welcometouber/">uberlin.com.ua/welcometouber</a>
-                <br>или по телефону 7373</p>
-        </div>
+        </div>       
 
         <!-- The Modal -->
         <div id="myModal" class="modal">
@@ -849,10 +890,12 @@ function registration_validationPart1(
 	{
 		$reg_errors['lname'] = 'Ошибка ввода фамилии';
 	}
-	if ( strlen( $fname ) < 2 || strlen( $fname ) > 100 )
-	{
-		$reg_errors['fname'] = 'Ошибка ввода отчества';
-	}
+    if(isset($fname)){
+	    if ( strlen( $fname ) < 2 || strlen( $fname ) > 100 )
+	    {
+		    $reg_errors['fname'] = 'Ошибка ввода отчества';
+	    }
+    }
 	if ( strlen( $city ) < 2 || strlen( $city ) > 100 )
 	{
 		$reg_errors['city'] = 'Ошибка ввода города';
@@ -921,9 +964,11 @@ function registration_validationPart2(
 	{
 		$reg_errors['lname'] = 'Ошибка ввода фамилии';
 	}
-	if ( strlen( $fname ) < 2 || strlen( $fname ) > 100 )
-	{
-		$reg_errors['fname'] = 'Ошибка ввода отчества';
+	if(isset($fname)){
+		if ( strlen( $fname ) < 2 || strlen( $fname ) > 100 )
+		{
+			$reg_errors['fname'] = 'Ошибка ввода отчества';
+		}
 	}
 	if ( strlen( $city ) < 2 || strlen( $city ) > 100 )
 	{
@@ -1000,12 +1045,12 @@ function complete_registrationPart1(
 	] ) );
 
 	return [
-		'user' => $response
+		'step1' => $response,
 	];
 }
 
 function complete_registrationPart2(
-	$name, $lname, $fname, $email, $phonenumber, $city,$payType, $bankCard, $carMark, $carModel, $carColor, $carYear, $carNumber
+	$name, $lname, $fname, $email, $phonenumber, $city, $payType, $bankCard, $carMark, $carModel, $carColor, $carYear, $carNumber
 ) {
 
 	$response = server_post_request( 'add-driver', json_encode( [
@@ -1029,7 +1074,7 @@ function complete_registrationPart2(
 	] ) );
 
 	return [
-		'user' => $response,
+		'step2' => $response,
 	];
 }
 
@@ -1091,6 +1136,7 @@ function complete_registrationPart3(
 		}
 	}
 
+	//,@$response2,@$response3,@$response4,@$response5,$file
 
 	return [
 		'doc_1' => json_decode( $response1['body'] ),

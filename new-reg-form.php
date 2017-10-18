@@ -174,7 +174,7 @@ function castom_reg_form_my_custom_js_footer()
             jQuery("#tabs").tabs();
         });
 
-        var new_reg_ajax_url = 'http://uberlin.com.ua/wp-admin/admin-ajax.php';
+        var new_reg_ajax_url = 'https://uberlin.com.ua/wp-admin/admin-ajax.php';
 
         jQuery(document).ready(function () {
 
