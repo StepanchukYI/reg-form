@@ -192,7 +192,7 @@ function custom_registration_submit_ajax()
 						{
 							if ( $response['doc_5']->result == 'ok' )
 							{
-								$response = [ 'success' => 'Спасибо за регистрацию!' ];
+								$response = [ 'success' => 'Заявка на регистрацию принята и будет выполнена в рабочее время. Наш менеджер свяжется с Вами и уведомит об активации аккаунта!' ];
 							} else
 							{
 								$response = [ 'error' => array( 'doc_5' => $response['doc_5']->description ) ];
@@ -423,6 +423,9 @@ function castom_reg_form_my_custom_js_footer()
                             console.log('2 error');
                             jQuery('#modal-text').html('');
                             jQuery('#myModal').css('display', 'block');
+                            if (response.error.personalData) {
+                                jQuery('#modal-text').append('<p>' + response.error.personalData + '<p>');
+                            }
                             if (response.error.fileFrontPage) {
                                 jQuery('#modal-text').append('<p>' + response.error.fileFrontPage + '<p>');
                             }
@@ -483,7 +486,7 @@ function castom_reg_form_my_custom_js_footer()
             });
 
             function goto() {
-                window.location = "http://uberlin.com.ua/welcometouber";
+                window.location = "http://uberlin.com.ua/success";
             }
         });
 
@@ -682,7 +685,7 @@ function registration_form( $local )
                            value="Далее"/>
                 </div>
                 <div>
-                    <p>Остались вопросы?<br> Подбронее по ссылке <br><a href="http://uberlin.com.ua/welcometouber/">uberlin.com.ua/welcometouber</a>
+                    <p>Есть вопросы?<br> Подбронее по ссылке <br><a href="http://uberlin.com.ua/welcometouber/">uberlin.com.ua/welcometouber</a>
                         <br>или по телефону 7373</p>
                 </div>
             </div>
@@ -785,7 +788,7 @@ function registration_form( $local )
                            value="Далее"/>
                 </div>
                 <div>
-                    <p>Остались вопросы?<br> Подбронее по ссылке <br><a href="http://uberlin.com.ua/welcometouber/">uberlin.com.ua/welcometouber</a>
+                    <p>Есть вопросы?<br> Подбронее по ссылке <br><a href="http://uberlin.com.ua/welcometouber/">uberlin.com.ua/welcometouber</a>
                         <br>или по телефону 7373</p>
                 </div>
             </div>
@@ -825,7 +828,7 @@ function registration_form( $local )
                            value="Регистрация"/>
                 </div>
                 <div>
-                    <p>Остались вопросы?<br> Подбронее по ссылке <br><a href="http://uberlin.com.ua/welcometouber/">uberlin.com.ua/welcometouber</a>
+                    <p>Есть вопросы?<br> Подбронее по ссылке <br><a href="http://uberlin.com.ua/welcometouber/">uberlin.com.ua/welcometouber</a>
                         <br>или по телефону 7373</p>
                 </div>
             </div>
@@ -890,12 +893,12 @@ function registration_validationPart1(
 	{
 		$reg_errors['lname'] = 'Ошибка ввода фамилии';
 	}
-    if(isset($fname)){
-	    if ( strlen( $fname ) < 2 || strlen( $fname ) > 100 )
-	    {
-		    $reg_errors['fname'] = 'Ошибка ввода отчества';
-	    }
-    }
+	if(isset($fname)){
+		if ( strlen( $fname ) < 2 || strlen( $fname ) > 100 )
+		{
+			$reg_errors['fname'] = 'Ошибка ввода отчества';
+		}
+	}
 	if ( strlen( $city ) < 2 || strlen( $city ) > 100 )
 	{
 		$reg_errors['city'] = 'Ошибка ввода города';
@@ -1001,7 +1004,7 @@ function registration_validationPart3(
 
 	if ( $personalData == 'false' )
 	{
-		$reg_errors['personalData'] = 'Ошибка подтверждения персональных данных';
+		$reg_errors['personalData'] = 'Подтвердите разрешение на обработку персональных данных';
 	}
 	if ( empty( $file['FrontPage'] ) )
 	{
