@@ -145,7 +145,7 @@ function custom_registration_submit_ajax()
 				$response = [ 'success' => '2' ];
 			} else
 			{
-				$response = [ 'error' => array( 'user123' => $response['user']->description ) ];
+				$response = [ 'error' => array( 'user' => $response['user']->description ) ];
 			}
 		} else
 		{
@@ -869,7 +869,7 @@ function check_card_number( $str )
 
 function server_post_request( $command, $body )
 {
-	$url      = 'http://1cconnect.uberlin.com.ua:4080/crm_test/hs/uberlin/' . $command;
+	$url      = 'http://1cconnect.uberlin.com.ua:4080/crm_kiev/hs/uberlin/' . $command;
 	$response = wp_remote_post( $url, [
 		'headers' => [
 			'Authorization' => 'Basic ' . base64_encode( 'SiteUberlin' . ':' . 'GU1me9qi' ),
@@ -955,7 +955,7 @@ function registration_validationPart2(
 	{
 		$reg_errors['carYear'] = 'Ошибка ввода года выпуска автомобиля';
 	}
-	if ( ! preg_match( "/^(?=.*[A-Za-z])(?=.*\d)[A-Za-z\d]{8}$/", $carNumber ) || strlen( $carNumber ) != 8 )
+	if ( ! preg_match( "/^(?=.*[A-Za-z])(?=.*\d)[A-Za-z\d]{8}$/", $carNumber ) || strlen( $carNumber ) < 9 || strlen( $carNumber ) > 6 )
 	{
 		$reg_errors['carNumber'] = 'Ошибка ввода Госномера автомобиля(номер автомобиля может содержать только латинские буквы и цифры)';
 	}
@@ -1085,7 +1085,7 @@ function complete_registrationPart3(
 	$email, $file
 ) {
 
-	$url = 'http://1cconnect.uberlin.com.ua:4080/crm_test/hs/uberlin/add-document';
+	$url = 'http://1cconnect.uberlin.com.ua:4080/crm_kiev/hs/uberlin/add-document';
 
 	$response1 = wp_remote_post( $url, [
 		'headers' => [
